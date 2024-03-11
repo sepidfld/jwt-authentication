@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+</head>
+
+<body>
+    <form id="loginForm">
+        <label for="name">name</label>
+        <input type="text" id="name" name="name">
+        <label for="password">password</label>
+        <input type="text" id="password" name="password">
+        <button><input type="submit"></button>
+        <a href="/register">register</a>
+    </form>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+        });
+        // Get the username and password from the form
+        const name = document.getElementById('name').value;
+        const password = document.getElementById('password').value;
+
+        //make a login request to the backend
+        async function LogIn(name, password) {
+            try {
+                // Get the username and password from the form
+                const name = document.getElementById('name').value;
+                const password = document.getElementById('password').value;
+
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ "name": name, "password": password }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Store the JWT token in local storage
+                    localStorage.setItem('jwtToken', data.token);
+
+                    // Optionally, you can redirect or perform other actions on successful login
+                    console.log('Login successful');
+                } else {
+                    console.error('Login failed:', response.status);
+                    // Handle login failure (e.g., display an error message)
+                }
+
+            } catch (error) {
+                console.error('Error during login:', error);
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+            console.log(name, password);
+
+
+            // Call the login function
+            await LogIn(name, password);
+        });
+    </script>
+</body>
+
+</html>
